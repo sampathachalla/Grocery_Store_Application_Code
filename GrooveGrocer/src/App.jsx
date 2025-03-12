@@ -7,6 +7,7 @@ function App() {
     <>
       <h1>Jai Sri Ram</h1>
       <h1>Jai Ganesha</h1>
+      <h1>Jai Hanuman</h1>
     </>
   );
 }
