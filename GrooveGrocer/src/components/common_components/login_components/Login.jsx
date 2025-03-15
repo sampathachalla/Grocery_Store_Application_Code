@@ -6,7 +6,7 @@ const Login = ({ setIsAuthenticated, setRole }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Extended Dummy Credentials
+  // Dummy Credentials
   const dummyUsers = {
     "staff@example.com": { password: "staff123", role: "staff", id: "staff_1" },
     "admin@example.com": {
@@ -29,48 +29,6 @@ const Login = ({ setIsAuthenticated, setRole }) => {
       role: "delivery",
       id: "del_1",
     },
-
-    // Added More Users for Testing
-    "customer2@example.com": {
-      password: "cust456",
-      role: "customer",
-      id: "cust_2",
-    },
-    "customer3@example.com": {
-      password: "cust789",
-      role: "customer",
-      id: "cust_3",
-    },
-    "vendor2@example.com": {
-      password: "vend456",
-      role: "vendor",
-      id: "vendor_2",
-    },
-    "vendor3@example.com": {
-      password: "vend789",
-      role: "vendor",
-      id: "vendor_3",
-    },
-    "delivery2@example.com": {
-      password: "del456",
-      role: "delivery",
-      id: "del_2",
-    },
-    "delivery3@example.com": {
-      password: "del789",
-      role: "delivery",
-      id: "del_3",
-    },
-    "staff2@example.com": {
-      password: "staff456",
-      role: "staff",
-      id: "staff_2",
-    },
-    "admin2@example.com": {
-      password: "admin456",
-      role: "superAdmin",
-      id: "admin_2",
-    },
   };
 
   const handleLogin = () => {
@@ -78,12 +36,10 @@ const Login = ({ setIsAuthenticated, setRole }) => {
       setIsAuthenticated(true);
       setRole(dummyUsers[email].role);
 
-      // Store authentication info in localStorage for persistence
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", dummyUsers[email].id);
       localStorage.setItem("role", dummyUsers[email].role);
 
-      // Redirect based on role and unique user ID
       switch (dummyUsers[email].role) {
         case "staff":
           navigate(`/staff/dashboard/${dummyUsers[email].id}`);
@@ -109,31 +65,69 @@ const Login = ({ setIsAuthenticated, setRole }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-white text-2xl font-bold text-center mb-4">
-          Login
-        </h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 mb-3 bg-gray-700 text-white rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 mb-3 bg-gray-700 text-white rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleLogin}
-        >
-          Login
-        </button>
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-[#0D0D0D] text-white overflow-hidden">
+      {/* Left Section - Branding Message */}
+      <div className="hidden md:flex flex-col justify-center items-center w-1/2 h-full px-12">
+        <h1 className="text-4xl font-bold">Welcome Back to GrooveGrocer</h1>
+        <p className="mt-4 text-lg text-center">
+          Log in to access your account and manage your groceries seamlessly!
+        </p>
+      </div>
+
+      {/* Right Section - Login Form */}
+      <div className="w-full md:w-1/2 flex justify-center items-center h-full">
+        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-semibold text-black text-center mb-6">
+            Login
+          </h2>
+
+          <form className="space-y-4">
+            <div>
+              <label className="block text-gray-700 font-medium">Email</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full px-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none text-black"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none text-black"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="button"
+              className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-300"
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+
+            {/* Sign Up Redirect Button */}
+            <p className="text-center text-gray-600 mt-4">
+              Don't have an account?{" "}
+              <button
+                onClick={() => navigate("/signup")}
+                className="text-blue-500 hover:underline"
+              >
+                Sign up here
+              </button>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

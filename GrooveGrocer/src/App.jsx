@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 
 // Common Components
 import Login from "./components/common_components/login_components/Login";
+import Signup from "./components/common_components/login_components/Signup"; // Added Signup Page
 
 // Admin Components
 import StaffDashboard from "./components/admin_components/staff/StaffDashboard";
@@ -48,6 +49,9 @@ function App() {
             />
           }
         />
+
+        {/* Signup Page */}
+        <Route path="/signup" element={<Signup />} />
 
         {/* Render respective dashboards based on role & userId */}
         <Route
