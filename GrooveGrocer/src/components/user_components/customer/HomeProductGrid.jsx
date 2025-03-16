@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import { FaSpinner, FaArrowDown } from "react-icons/fa";
 import ProductDetailCard from "./prodcut_detail_card/ProductDetailCard";
+import ProductDetailPage from "./product_detail_page/ProductDetailPage";
 
-// Helper Function to Create Product Data with Local Images
-
+// Import Local Images
 import img1 from "../../../assets/img1.jpg";
 import img2 from "../../../assets/img2.jpg";
 import img3 from "../../../assets/img3.jpg";
 import img4 from "../../../assets/img4.jpg";
 
+// Array of images
 const images = [img1, img2, img3, img4];
+
+// Generate Products with local images
 const generateProductDetails = () => {
   return Array.from({ length: 100 }, (_, i) => ({
     id: i + 1,
@@ -18,7 +21,8 @@ const generateProductDetails = () => {
     rating: (Math.random() * 2 + 3).toFixed(1),
     offer: "Free shipping on orders over $50",
     description: "High quality product, perfect for daily use.",
-    image: images[i % images.length], // ✅ Dynamically assign local image
+    shortDescription: "Short product description",
+    image: images[i % images.length],
   }));
 };
 
@@ -27,8 +31,8 @@ const HomeProductGrid = () => {
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [itemsToShow, setItemsToShow] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Load visible products
   useEffect(() => {
     setVisibleProducts(allProducts.slice(0, itemsToShow));
   }, [itemsToShow]);
@@ -44,12 +48,16 @@ const HomeProductGrid = () => {
   };
 
   return (
-    <div className="w-full h-full p-6 overflow-y-auto">
+    <div className="w-full h-full p-6 overflow-y-auto relative">
       <h2 className="text-xl font-semibold text-black mb-4">Our Products</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {visibleProducts.map((product) => (
-          <ProductDetailCard key={product.id} product={product} />
+          <ProductDetailCard
+            key={product.id}
+            product={product}
+            onImageClick={() => setSelectedProduct(product)} // 🔹 Trigger popup on image click only
+          />
         ))}
       </div>
 
@@ -75,6 +83,24 @@ const HomeProductGrid = () => {
               </>
             )}
           </button>
+        </div>
+      )}
+
+      {/* Product Detail Popup Modal */}
+      {selectedProduct && (
+        <div
+          className="fixed inset-0 z-70 flex justify-center items-start overflow-y-auto pt-10 bg-white/30 backdrop-blur-sm"
+          onClick={() => setSelectedProduct(null)} // ✅ Close on background click
+        >
+          <div
+            className="bg-white w-full max-w-6xl rounded-lg shadow-lg relative mx-4"
+            onClick={(e) => e.stopPropagation()} // ❗ Prevent background click when inside box
+          >
+            <ProductDetailPage
+              product={selectedProduct}
+              onClose={() => setSelectedProduct(null)} // ✅ Close on back button
+            />
+          </div>
         </div>
       )}
     </div>

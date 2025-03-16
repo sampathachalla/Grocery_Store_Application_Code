@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { FaStar, FaShoppingCart, FaPlus } from "react-icons/fa";
 
-const ProductDetailCard = ({ product }) => {
+const ProductDetailCard = ({ product, onImageClick }) => {
   const [hoverAdd, setHoverAdd] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="relative bg-white border border-gray-300 rounded-lg p-4 shadow hover:shadow-md transition duration-300 w-full max-w-xs mx-auto">
-      {/* 🔹 Top-Right Add/Cart Button */}
+    <div className="relative bg-white rounded-lg p-4 hover:bg-gray-50 transition duration-300 w-full max-w-xs mx-auto">
+      {/* Add/Cart Button Top-Right */}
       <button
         className="absolute top-3 right-3 bg-black text-white px-3 py-2 rounded-full hover:bg-gray-800 transition z-10 font-semibold text-sm flex items-center"
         aria-label="Add Product"
@@ -28,7 +28,7 @@ const ProductDetailCard = ({ product }) => {
         )}
       </button>
 
-      {/* 🔹 Product Image with graceful loading */}
+      {/* Product Image - No Border or Shadow */}
       <div className="relative w-full h-48 mb-4">
         {!imageLoaded && !imageError && (
           <div className="absolute inset-0 flex justify-center items-center">
@@ -44,7 +44,11 @@ const ProductDetailCard = ({ product }) => {
               setImageError(true);
               setImageLoaded(true);
             }}
-            className={`w-full h-48 object-cover rounded-md border border-gray-200 transition-opacity duration-500 ${
+            onClick={(e) => {
+              e.stopPropagation();
+              onImageClick();
+            }}
+            className={`cursor-pointer w-full h-48 object-cover rounded-md transition-opacity duration-500 ${
               imageLoaded ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -55,7 +59,7 @@ const ProductDetailCard = ({ product }) => {
         )}
       </div>
 
-      {/* 🔹 Price & Rating */}
+      {/* Price & Rating */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-black font-semibold text-lg">
           ${product.price}
@@ -66,10 +70,10 @@ const ProductDetailCard = ({ product }) => {
         </div>
       </div>
 
-      {/* 🔹 Offer Tag */}
+      {/* Offer */}
       <div className="text-gray-500 text-xs italic mb-1">{product.offer}</div>
 
-      {/* 🔹 Description */}
+      {/* Description */}
       <p className="text-gray-700 text-sm">{product.description}</p>
     </div>
   );
