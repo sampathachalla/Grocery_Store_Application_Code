@@ -1,29 +1,45 @@
 import { useState, useEffect } from "react";
-import { FaSpinner, FaArrowDown } from "react-icons/fa"; // Spinner + Arrow icon
+import { FaSpinner, FaArrowDown } from "react-icons/fa";
+import ProductDetailCard from "./prodcut_detail_card/ProductDetailCard";
 
-const HomeProductGrid = () => {
-  const totalProducts = Array.from({ length: 100 }, (_, i) => ({
+// Helper Function to Create Product Data with Local Images
+
+import img1 from "../../../assets/img1.jpg";
+import img2 from "../../../assets/img2.jpg";
+import img3 from "../../../assets/img3.jpg";
+import img4 from "../../../assets/img4.jpg";
+
+const images = [img1, img2, img3, img4];
+const generateProductDetails = () => {
+  return Array.from({ length: 100 }, (_, i) => ({
     id: i + 1,
     name: `P-${i + 1}`,
-    image: "https://via.placeholder.com/150",
+    price: (Math.random() * 100 + 10).toFixed(2),
+    rating: (Math.random() * 2 + 3).toFixed(1),
+    offer: "Free shipping on orders over $50",
+    description: "High quality product, perfect for daily use.",
+    image: images[i % images.length], // ✅ Dynamically assign local image
   }));
+};
 
+const HomeProductGrid = () => {
+  const allProducts = generateProductDetails();
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [itemsToShow, setItemsToShow] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
 
   // Load visible products
   useEffect(() => {
-    setVisibleProducts(totalProducts.slice(0, itemsToShow));
+    setVisibleProducts(allProducts.slice(0, itemsToShow));
   }, [itemsToShow]);
 
   const loadMore = () => {
-    if (itemsToShow < totalProducts.length) {
+    if (itemsToShow < allProducts.length) {
       setIsLoading(true);
       setTimeout(() => {
         setItemsToShow((prev) => prev + 20);
         setIsLoading(false);
-      }, 1000); // Simulated delay
+      }, 1000);
     }
   };
 
@@ -33,22 +49,12 @@ const HomeProductGrid = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {visibleProducts.map((product) => (
-          <div
-            key={product.id}
-            className="bg-gray-100 p-4 rounded-lg text-center border border-gray-300"
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="rounded-lg mb-2"
-            />
-            <p className="font-medium text-black">{product.name}</p>
-          </div>
+          <ProductDetailCard key={product.id} product={product} />
         ))}
       </div>
 
-      {/* Load More Button with Icon */}
-      {itemsToShow < totalProducts.length && (
+      {/* Load More Button */}
+      {itemsToShow < allProducts.length && (
         <div className="text-center mt-4">
           <button
             onClick={loadMore}
