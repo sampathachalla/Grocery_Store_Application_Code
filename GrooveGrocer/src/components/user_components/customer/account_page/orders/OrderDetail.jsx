@@ -1,6 +1,6 @@
+import OrderHeader from "./OrderHeader";
 import OrderStatus from "./OrderStatus";
 import OrderActions from "./OrderActions";
-import OrderFooter from "./OrderFooter";
 import TrackingDetails from "./TrackingDetails";
 import ReturnSection from "./ReturnSection";
 import ProductReview from "./ProductReview";
@@ -23,28 +23,31 @@ const OrderDetail = ({ order, onClose }) => {
   };
 
   return (
-    <div className="h-full w-full p-4 space-y-4 relative overflow-y-auto">
+    <div className="h-full w-full p-4 space-y-4 relative overflow-y-auto bg-white text-black">
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-gray-500 hover:text-black"
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-lg font-bold"
       >
         ✕
       </button>
 
-      {/* Order Status */}
-      <OrderStatus order={order} />
+      {/* Add margin-top to push below the close button */}
+      <div className="mt-8 space-y-4">
+        <OrderHeader order={order} />
+        <OrderStatus order={order} />
+        <OrderActions onActionSelect={setActiveSection} />
 
-      {/* Actions */}
-      <OrderActions onActionSelect={setActiveSection} />
-
-      {/* Conditional Section with Smooth Transition */}
-      <div
-        className={`transition-all duration-500 ease-in-out overflow-hidden ${
-          activeSection ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        {renderSection()}
+        {/* Conditional Section */}
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            activeSection
+              ? "max-h-[500px] opacity-100 mt-2"
+              : "max-h-0 opacity-0 mt-0"
+          }`}
+        >
+          {renderSection()}
+        </div>
       </div>
     </div>
   );

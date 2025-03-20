@@ -1,8 +1,15 @@
+import AccountInfo from "./AccountInfo";
+import PersonalInfo from "./PersonalInfo";
+import AdditionalSettings from "./AdditionalSettings";
+
 const AccountSettings = () => {
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
-      <p className="text-gray-600">Account Settings will be shown here...</p>
+    <div className="p-4 space-y-6 text-black">
+      <h2 className="text-lg font-semibold text-center">Account Settings</h2>
+
+      <AccountInfo />
+      <PersonalInfo />
+      <AdditionalSettings />
     </div>
   );
 };

@@ -20,49 +20,67 @@ const dummyOrders = [
 ];
 
 const Orders = () => {
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isPanelMounted, setIsPanelMounted] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
 
-  const toggleDetail = (orderId) => {
-    setSelectedOrderId((prev) => (prev === orderId ? null : orderId));
+  const handleCardClick = (order) => {
+    if (selectedOrder?.id === order.id) {
+      // Close the panel
+      setAnimateIn(false);
+      setTimeout(() => {
+        setSelectedOrder(null);
+        setIsPanelMounted(false);
+      }, 500);
+    } else if (selectedOrder) {
+      // Switch panel to another order
+      setAnimateIn(false);
+      setTimeout(() => {
+        setSelectedOrder(order);
+        setIsPanelMounted(true);
+        setTimeout(() => setAnimateIn(true), 10);
+      }, 500);
+    } else {
+      // First open
+      setSelectedOrder(order);
+      setIsPanelMounted(true);
+      setTimeout(() => setAnimateIn(true), 10);
+    }
+  };
+
+  const closePanel = () => {
+    setAnimateIn(false);
+    setTimeout(() => {
+      setSelectedOrder(null);
+      setIsPanelMounted(false);
+    }, 500);
   };
 
   return (
-    <div className="h-full bg-white text-black p-4 space-y-4 w-full">
+    <div className="relative h-full bg-white text-black p-4 space-y-4 w-full">
       <h2 className="text-lg font-semibold">Your Orders</h2>
 
-      {/* Order Cards with Dropdown Detail */}
+      {/* Order Cards */}
       <div className="space-y-4">
         {dummyOrders.map((order) => (
-          <div
+          <OrderCard
             key={order.id}
-            className="border border-gray-200 rounded-lg shadow-sm"
-          >
-            <OrderCard
-              order={order}
-              onClick={() => toggleDetail(order.id)}
-              isOpen={selectedOrderId === order.id}
-            />
-
-            {/* Dropdown Detail with Independent Scroll */}
-            <div
-              className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                selectedOrderId === order.id
-                  ? "max-h-[500px] p-4"
-                  : "max-h-0 p-0"
-              }`}
-            >
-              {selectedOrderId === order.id && (
-                <div className="max-h-[400px] overflow-y-auto">
-                  <OrderDetail
-                    order={order}
-                    onClose={() => setSelectedOrderId(null)}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
+            order={order}
+            onClick={() => handleCardClick(order)}
+          />
         ))}
       </div>
+
+      {/* Slide-in Order Detail Panel */}
+      {isPanelMounted && selectedOrder && (
+        <div
+          className={`fixed top-0 right-0 h-full w-[40vw] bg-white border-l border-gray-200 shadow-lg z-50 transform transition-transform duration-500 ${
+            animateIn ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <OrderDetail order={selectedOrder} onClose={closePanel} />
+        </div>
+      )}
     </div>
   );
 };
