@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { FaCreditCard, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {
+  FaCreditCard,
+  FaChevronDown,
+  FaChevronUp,
+  FaTimes,
+} from "react-icons/fa";
 import { SiVenmo, SiPaypal } from "react-icons/si";
 import CardForm from "./CardForm";
 import VenmoForm from "./VenmoForm";
 import PayPalForm from "./PayPalForm";
 
-const Payments = () => {
+const Payments = ({ onClose }) => {
   const [openMethod, setOpenMethod] = useState(null);
 
   const toggleMethod = (method) => {
@@ -34,7 +39,17 @@ const Payments = () => {
   ];
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="relative p-4 space-y-4">
+      {/* Close Icon in the top right corner */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-600 hover:text-black focus:outline-none"
+        >
+          <FaTimes size={20} />
+        </button>
+      )}
+
       <h2 className="text-lg font-semibold text-black text-center">
         Add Payment Method
       </h2>
@@ -42,7 +57,7 @@ const Payments = () => {
       {paymentOptions.map(({ key, icon, label, form }) => (
         <div
           key={key}
-          onClick={() => toggleMethod(key)} // ✅ Click anywhere on the block
+          onClick={() => toggleMethod(key)}
           className="border rounded-lg bg-white shadow-sm transition duration-300 cursor-pointer"
         >
           <div className="flex justify-between items-center p-3">

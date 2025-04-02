@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { FaPlus, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
+import { FaPlus, FaTrash, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
 import AddressForm from "./AddressForm";
 import AddressList from "./AddressList";
 
-const Address = () => {
+const Address = ({ onClose }) => {
   const [addresses, setAddresses] = useState([
     "Address - 1",
     "Address - 2",
@@ -19,9 +19,19 @@ const Address = () => {
   };
 
   return (
-    <div className="w-full h-full p-6 text-black">
-      {/* Top Bar with Icons */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="relative w-full h-full p-6 text-black">
+      {/* Close Icon in the top right corner (moved to top-2) */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-4 text-gray-600 hover:text-black focus:outline-none"
+        >
+          <FaTimes size={20} />
+        </button>
+      )}
+
+      {/* Top Bar with Icons (moved down with mt-8) */}
+      <div className="mt-8 flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Addresses</h2>
         <button
           onClick={toggleForm}

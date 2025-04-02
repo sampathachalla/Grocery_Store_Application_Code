@@ -2,46 +2,63 @@ import { useState, useEffect } from "react";
 import { FaSpinner, FaArrowDown } from "react-icons/fa";
 import ProductDetailCard from "./prodcut_detail_card/ProductDetailCard";
 import ProductDetailPage from "./product_detail_page/ProductDetailPage";
+import axios from "axios";
 
-// Import Local Images
+// Dummy Images (stay the same)
 import img1 from "../../../assets/img1.jpg";
 import img2 from "../../../assets/img2.jpg";
 import img3 from "../../../assets/img3.jpg";
 import img4 from "../../../assets/img4.jpg";
 
-// Array of images
+// Array of images for random assignment
 const images = [img1, img2, img3, img4];
 
-// Generate Products with local images
-const generateProductDetails = () => {
-  return Array.from({ length: 100 }, (_, i) => ({
-    id: i + 1,
-    name: `P-${i + 1}`,
-    price: (Math.random() * 100 + 10).toFixed(2),
-    rating: (Math.random() * 2 + 3).toFixed(1),
-    offer: "Free shipping on orders over $50",
-    description: "High quality product, perfect for daily use.",
-    shortDescription: "Short product description",
-    image: images[i % images.length],
-  }));
-};
-
-const HomeProductGrid = () => {
-  const allProducts = generateProductDetails();
+const HomeProductGrid = ({ selectedCategoryId }) => {
+  const [allProducts, setAllProducts] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [itemsToShow, setItemsToShow] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // ✅ Fetch products whenever selectedCategoryId changes
   useEffect(() => {
-    setVisibleProducts(allProducts.slice(0, itemsToShow));
-  }, [itemsToShow]);
+    if (!selectedCategoryId) {
+      setAllProducts([]); // Clear products if no category
+      setVisibleProducts([]);
+      return;
+    }
 
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/products?category_id=${selectedCategoryId}`
+        );
+        // ✅ Assign random dummy images to fetched products
+        const productsWithImages = res.data.map((prod, index) => ({
+          ...prod,
+          image: images[index % images.length],
+        }));
+        setAllProducts(productsWithImages);
+        setVisibleProducts(productsWithImages.slice(0, 20));
+        setItemsToShow(20);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [selectedCategoryId]);
+
+  // ✅ Load More Logic (unchanged)
   const loadMore = () => {
     if (itemsToShow < allProducts.length) {
       setIsLoading(true);
       setTimeout(() => {
         setItemsToShow((prev) => prev + 20);
+        setVisibleProducts(allProducts.slice(0, itemsToShow + 20));
         setIsLoading(false);
       }, 1000);
     }
@@ -54,9 +71,9 @@ const HomeProductGrid = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {visibleProducts.map((product) => (
           <ProductDetailCard
-            key={product.id}
+            key={product.product_id}
             product={product}
-            onImageClick={() => setSelectedProduct(product)} // 🔹 Trigger popup on image click only
+            onImageClick={() => setSelectedProduct(product)}
           />
         ))}
       </div>
@@ -90,15 +107,15 @@ const HomeProductGrid = () => {
       {selectedProduct && (
         <div
           className="fixed inset-0 z-70 flex justify-center items-start overflow-y-auto pt-10 bg-white/30 backdrop-blur-sm"
-          onClick={() => setSelectedProduct(null)} // ✅ Close on background click
+          onClick={() => setSelectedProduct(null)}
         >
           <div
             className="bg-white w-full max-w-6xl rounded-lg shadow-lg relative mx-4"
-            onClick={(e) => e.stopPropagation()} // ❗ Prevent background click when inside box
+            onClick={(e) => e.stopPropagation()}
           >
             <ProductDetailPage
               product={selectedProduct}
-              onClose={() => setSelectedProduct(null)} // ✅ Close on back button
+              onClose={() => setSelectedProduct(null)}
             />
           </div>
         </div>

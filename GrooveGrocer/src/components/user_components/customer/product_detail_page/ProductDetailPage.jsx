@@ -62,13 +62,23 @@ const ProductDetailPage = ({ product, onClose }) => {
             onClick={() => setInfoOpen(!infoOpen)}
           >
             Additional Information
-            <span>{infoOpen ? "▲" : "▼"}</span>
+            <span
+              className={`transition-transform duration-300 ${
+                infoOpen ? "rotate-180" : ""
+              }`}
+            >
+              ▼
+            </span>
           </button>
-          {infoOpen && (
+          <div
+            className={`overflow-hidden transition-all duration-500 ${
+              infoOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
             <p className="text-gray-600 mt-2 text-sm">
               Detailed specifications, materials, and product details.
             </p>
-          )}
+          </div>
         </div>
       </div>
 
@@ -101,9 +111,19 @@ const ProductDetailPage = ({ product, onClose }) => {
           onClick={() => setReviewsOpen(!reviewsOpen)}
         >
           Reviews and Ratings
-          <span>{reviewsOpen ? "▲" : "▼"}</span>
+          <span
+            className={`transition-transform duration-300 ${
+              reviewsOpen ? "rotate-180" : ""
+            }`}
+          >
+            ▼
+          </span>
         </button>
-        {reviewsOpen && (
+        <div
+          className={`overflow-hidden transition-all duration-500 ${
+            reviewsOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
           <div className="mt-4 space-y-4">
             {[1, 2, 3].map((review) => (
               <div
@@ -116,7 +136,7 @@ const ProductDetailPage = ({ product, onClose }) => {
               </div>
             ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

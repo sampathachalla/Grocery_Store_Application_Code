@@ -1,70 +1,54 @@
-import { useState, useRef, useEffect } from "react";
-import { FaSpinner } from "react-icons/fa"; // Spinner icon
+import { useState, useEffect, useRef } from "react";
+import { FaSpinner } from "react-icons/fa";
+import axios from "axios";
 
-const HomeSidebar = () => {
-  const totalCategories = Array.from(
-    { length: 25 },
-    (_, i) => `Sub-Category ${i + 1}`
-  );
-  const [visibleCategories, setVisibleCategories] = useState([]);
-  const [itemsToShow, setItemsToShow] = useState(10); // Start with 10
+const HomeSidebar = ({ selectedCategoryId }) => {
+  const [subcategories, setSubcategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef(null);
 
-  // Load visible categories
+  // ✅ Fetch subcategories whenever category changes
   useEffect(() => {
-    setVisibleCategories(totalCategories.slice(0, itemsToShow));
-  }, [itemsToShow]);
+    if (!selectedCategoryId) {
+      setSubcategories([]);
+      return;
+    }
 
-  // Infinite Scroll Trigger
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (
-          target.isIntersecting &&
-          itemsToShow < totalCategories.length &&
-          !isLoading
-        ) {
-          loadMore();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
+    const fetchSubcategories = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/categories/${selectedCategoryId}/subcategories`
+        );
+        setSubcategories(res.data);
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }, [visibleCategories, isLoading]);
 
-  // Load more with spinner
-  const loadMore = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setItemsToShow((prev) => Math.min(prev + 3, totalCategories.length));
-      setIsLoading(false);
-    }, 1000); // Simulate 1s loading time
-  };
+    fetchSubcategories();
+  }, [selectedCategoryId]);
 
   return (
     <div className="flex flex-col bg-gray-100 shadow-md border-r border-gray-300">
-      <div className="p-6">
-        <h2 className="text-xl font-semibold mb-4 text-black">Categories</h2>
+      <div className="px-4 py-2">
+        <h2 className="text-xl font-semibold mb-4 text-black">Subcategories</h2>
+
+        {/* Subcategory List */}
         <ul className="space-y-3 text-gray-700">
-          {visibleCategories.map((category, i) => (
+          {subcategories.map((subcategory) => (
             <li
-              key={i}
-              className={`${
-                i === 0 ? "font-bold text-black" : ""
-              } hover:text-black cursor-pointer`}
+              key={subcategory.subcategory_id}
+              className="hover:text-black cursor-pointer"
             >
-              📌 {category}
+              📌 {subcategory.name}
             </li>
           ))}
         </ul>
 
-        {/* Loading Spinner Animation */}
+        {/* Loader */}
         {isLoading && (
           <div className="flex items-center justify-center mt-4 text-gray-600">
             <FaSpinner className="animate-spin mr-2" />
@@ -72,7 +56,7 @@ const HomeSidebar = () => {
           </div>
         )}
 
-        {/* Invisible trigger for infinite scroll */}
+        {/* Placeholder loader trigger (Optional if you plan infinite scroll later) */}
         <div ref={loaderRef} className="h-6 mt-4"></div>
       </div>
     </div>

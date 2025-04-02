@@ -1,6 +1,7 @@
+import { FaTimes } from "react-icons/fa";
 import NotificationGroup from "./NotificationGroup";
 
-const NotificationSettings = () => {
+const NotificationSettings = ({ onClose }) => {
   const orderNotifications = [
     {
       label: "Order Updates",
@@ -28,7 +29,17 @@ const NotificationSettings = () => {
   ];
 
   return (
-    <div className="p-4 text-black bg-white space-y-6">
+    <div className="relative p-4 text-black bg-white space-y-6">
+      {/* Close Icon in the top right corner */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-600 hover:text-black focus:outline-none"
+        >
+          <FaTimes size={20} />
+        </button>
+      )}
+
       <h2 className="text-xl font-semibold">Notification Settings</h2>
 
       <NotificationGroup
