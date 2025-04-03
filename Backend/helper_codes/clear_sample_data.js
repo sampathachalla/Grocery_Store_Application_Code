@@ -1,5 +1,5 @@
 // clear_sample_data.js
-const db = require("./db");
+const db = require("../db");
 
 async function clearSampleData() {
   try {
@@ -12,7 +12,6 @@ async function clearSampleData() {
     await db.query(`DELETE FROM products`);
     await db.query(`DELETE FROM subcategories`);
     await db.query(`DELETE FROM categories`);
-    await db.query(`DELETE FROM users`);
 
     console.log("✅ All tables cleared successfully.");
   } catch (err) {

@@ -1,5 +1,5 @@
 // clear_all_tables.js
-const db = require("./db");
+const db = require("../db");
 
 (async () => {
   try {
@@ -13,7 +13,6 @@ const db = require("./db");
     await db.query(`DROP TABLE IF EXISTS products`);
     await db.query(`DROP TABLE IF EXISTS subcategories`);
     await db.query(`DROP TABLE IF EXISTS categories`);
-    await db.query(`DROP TABLE IF EXISTS users`);
 
     console.log("✅ All tables dropped successfully (Database cleared)");
   } catch (err) {
